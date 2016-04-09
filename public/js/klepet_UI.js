@@ -93,12 +93,20 @@ $(document).ready(function() {
       $('#poslji-sporocilo').focus();
     });
   });
+  
+  
 
   socket.on('uporabniki', function(uporabniki) {
     $('#seznam-uporabnikov').empty();
     for (var i=0; i < uporabniki.length; i++) {
       $('#seznam-uporabnikov').append(divElementEnostavniTekst(uporabniki[i]));
     }
+    
+    $('#seznam-uporabnikov div').click(function() {
+      $('#poslji-sporocilo').focus();
+      $("#poslji-sporocilo").val("/zasebno \"" + $(this).text() + "\"");
+    });
+    
   });
 
   setInterval(function() {
