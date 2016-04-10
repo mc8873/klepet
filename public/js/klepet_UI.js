@@ -1,9 +1,13 @@
+var formati = [".jpg",".png",".gif"];
+
 function divElementEnostavniTekst(sporocilo) {
   var jeSmesko = sporocilo.indexOf('http://sandbox.lavbic.net/teaching/OIS/gradivo/') > -1;
-  if (jeSmesko) {
-    sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace('&lt;img', '<img').replace('png\' /&gt;', 'png\' />');
+  var slika = sporocilo.match(/http[s]?:\/\/(\S+)(.jpg|.gif|.png)/g);
+  if (jeSmesko | (slika!=null)){
+      sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/&lt;br&gt;/g, '<br>').replace(/&lt;img/g, '<img').replace(/png\' \/&gt;/g, 'png\' />').replace(/jpg\' \/&gt;/g, 'jpg\' />').replace(/gif\' \/&gt;/g, 'gif\' />');
     return $('<div style="font-weight: bold"></div>').html(sporocilo);
-  } else {
+  } 
+  else {
     return $('<div style="font-weight: bold;"></div>').text(sporocilo);
   }
 }
@@ -14,6 +18,7 @@ function divElementHtmlTekst(sporocilo) {
 
 function procesirajVnosUporabnika(klepetApp, socket) {
   var sporocilo = $('#poslji-sporocilo').val();
+  sporocilo = dodajSlike(sporocilo);
   sporocilo = dodajSmeske(sporocilo);
   var sistemskoSporocilo;
 
@@ -22,7 +27,8 @@ function procesirajVnosUporabnika(klepetApp, socket) {
     if (sistemskoSporocilo) {
       $('#sporocila').append(divElementHtmlTekst(sistemskoSporocilo));
     }
-  } else {
+  }
+  else {
     sporocilo = filtirirajVulgarneBesede(sporocilo);
     klepetApp.posljiSporocilo(trenutniKanal, sporocilo);
     $('#sporocila').append(divElementEnostavniTekst(sporocilo));
@@ -132,10 +138,25 @@ function dodajSmeske(vhodnoBesedilo) {
     ":*": "kiss.png",
     ":(": "sad.png"
   }
+  
+  
   for (var smesko in preslikovalnaTabela) {
     vhodnoBesedilo = vhodnoBesedilo.replace(smesko,
       "<img src='http://sandbox.lavbic.net/teaching/OIS/gradivo/" +
       preslikovalnaTabela[smesko] + "' />");
   }
+  
+  return vhodnoBesedilo;
+}
+
+function dodajSlike(vhodnoBesedilo){
+  var link = vhodnoBesedilo.match(/http[s]?:\/\/(\S+)(.jpg|.gif|.png)/g);
+  
+  if(link!=null){
+    for(var i=0; i<link.length; i++){
+      vhodnoBesedilo+= "<br> <img width='200' height='150' hspace='20' src='"+link[i]+"' />"; 
+    }
+  }
+  
   return vhodnoBesedilo;
 }
