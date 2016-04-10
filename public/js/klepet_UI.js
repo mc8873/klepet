@@ -3,8 +3,9 @@ var formati = [".jpg",".png",".gif"];
 function divElementEnostavniTekst(sporocilo) {
   var jeSmesko = sporocilo.indexOf('http://sandbox.lavbic.net/teaching/OIS/gradivo/') > -1;
   var slika = sporocilo.match(/http[s]?:\/\/(\S+)(.jpg|.gif|.png)/g);
-  if (jeSmesko | (slika!=null)){
-      sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/&lt;br&gt;/g, '<br>').replace(/&lt;img/g, '<img').replace(/png\' \/&gt;/g, 'png\' />').replace(/jpg\' \/&gt;/g, 'jpg\' />').replace(/gif\' \/&gt;/g, 'gif\' />');
+  var vid = sporocilo.match(/https:\/\/www.youtube.com\/watch\?v(\S+)/g);
+  if (jeSmesko || (vid!=null) || (slika!=null)) {
+    sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace(/&lt;br&gt;/g, '<br>').replace(/&lt;img/g, '<img').replace(/png\' \/&gt;/g, 'png\' />').replace(/jpg\' \/&gt;/g, 'jpg\' />').replace(/gif\' \/&gt;/g, 'gif\' />').replace(/&lt;iframe/g, '<iframe').replace(/allowfullscreen&gt;&lt;\/iframe&gt;/g, 'allowfullscreen></iframe>');
     return $('<div style="font-weight: bold"></div>').html(sporocilo);
   } 
   else {
@@ -19,6 +20,7 @@ function divElementHtmlTekst(sporocilo) {
 function procesirajVnosUporabnika(klepetApp, socket) {
   var sporocilo = $('#poslji-sporocilo').val();
   sporocilo = dodajSlike(sporocilo);
+  sporocilo = dodajVideo(sporocilo);
   sporocilo = dodajSmeske(sporocilo);
   var sistemskoSporocilo;
 
@@ -155,6 +157,18 @@ function dodajSlike(vhodnoBesedilo){
   if(link!=null){
     for(var i=0; i<link.length; i++){
       vhodnoBesedilo+= "<br> <img width='200' height='150' hspace='20' src='"+link[i]+"' />"; 
+    }
+  }
+  
+  return vhodnoBesedilo;
+}
+
+function dodajVideo(vhodnoBesedilo){
+  var link=vhodnoBesedilo.match(/https:\/\/www.youtube.com\/watch\?v=(\S+)/g);
+  
+  if(link!=null){
+    for(var i=0; i<link.length; i++){
+      vhodnoBesedilo+= "<br> <iframe id='video' width='200' height='150' src='https://www.youtube.com/embed/" + link[i].substring(32,43) +"'  allowfullscreen></iframe>";
     }
   }
   

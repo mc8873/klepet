@@ -53,8 +53,14 @@ a {
   background-color: #ddd;
 }
 
+<<<<<<< HEAD
 #seznam-uporabnikov div:hover {
   background-color: #ddd;
+=======
+#video  {
+  padding-left: 20px;
+  border: 0px;
+>>>>>>> youtube
 }
 
 #poslji-sporocilo {
