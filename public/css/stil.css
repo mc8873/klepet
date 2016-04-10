@@ -48,6 +48,11 @@ a {
   background-color: #ddd;
 }
 
+#video  {
+  padding-left: 20px;
+  border: 0px;
+}
+
 #poslji-sporocilo {
   width: 700px;
   margin-bottom: 1em;
